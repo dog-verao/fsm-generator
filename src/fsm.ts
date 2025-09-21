@@ -28,7 +28,7 @@ export class FSM<S extends string, A extends string> {
   }
 
   verifyCharSanity(char: string) {
-    if (char !== '0' && char !== '1') {
+    if (!this.alphabet.has(char as A)) {
       throw new Error(`Invalid character: ${char}`);
     }
   }
