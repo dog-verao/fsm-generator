@@ -1,43 +1,48 @@
-type State = 'S0' | 'S1' | 'S2';
-type Symbol = '0' | '1';
+export type TransitionMap<S extends string, A extends string> = {
+  [Q in S]: {
+    [X in A]: S
+  };
+}
 
-export class FSM {
-  states: State[] = ['S0', 'S1', 'S2'];
-  alphabet: Symbol[] = ['0', '1'];
-  readonly initialState: State = 'S0';
-  currentState: State = 'S0';
+export interface FSMOptions<S extends string, A extends string> {
+  states: S[];
+  alphabet: A[];
+  initialState: S;
+  transitions: TransitionMap<S, A>
+}
 
-  transitions: Record<State, Record<Symbol, State>> = {
-    S0: {
-      '0': 'S0',
-      '1': 'S1'
-    },
-    S1: {
-      '0': 'S2',
-      '1': 'S0'
-    },
-    S2: {
-      '0': 'S1',
-      '1': 'S2'
-    }
+export class FSM<S extends string, A extends string> {
+  private states: Set<S>
+  private alphabet: Set<A>
+  private initialState: S;
+  private transitions: TransitionMap<S, A>;
+
+
+  constructor(opts: FSMOptions<S, A>) {
+    const { states, alphabet, initialState, transitions } = opts;
+    this.states = new Set(states);
+    this.alphabet = new Set(alphabet);
+    this.initialState = initialState;
+    this.transitions = transitions;
+
   }
 
-  errorHandler(char: string) {
+  verifyCharSanity(char: string) {
     if (char !== '0' && char !== '1') {
-      throw new Error
+      throw new Error(`Invalid character: ${char}`);
     }
   }
 
-  transition(symbol: Symbol) {
-    this.currentState = this.transitions[this.currentState][symbol];
+  transition(state: S, symbol: A): S {
+    return this.transitions[state][symbol];
   }
 
-  run(input: string): State {
-    this.currentState = this.initialState;
+  run(input: string): S {
+    let cur: S = this.initialState;
     for (const char of input) {
-      this.errorHandler(char);
-      this.transition(char as Symbol);
+      this.verifyCharSanity(char);
+      cur = this.transition(cur, char as A);
     }
-    return this.currentState;
+    return cur;
   }
 }
