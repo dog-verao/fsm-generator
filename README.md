@@ -91,3 +91,7 @@ The FSM is fully reusable for other problems (e.g., modulo N, pattern recognitio
 Extend the FSM to handle larger alphabets or multi-character symbols.
 Add support for defining “accepting states” (useful in pattern-matching problems).
 Provide CLI or API endpoints for demonstration.
+
+
+Note:
+The commit history of this project can show exactly the steps I took when developing it. This can give also a clear view of the thought process and how this has evolved
